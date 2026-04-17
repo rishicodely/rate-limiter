@@ -10,12 +10,12 @@ function getCurrentWindow() {
 
 const rateLimiter = async (req, res, next) => {
   try {
-    const ip = req.ip();
+    const ip = req.ip;
     const window = getCurrentWindow();
 
     const key = `rate_limit:${ip}:${window}`;
 
-    const requestCount = redis.incr(key);
+    const requestCount = await redis.incr(key);
 
     if (requestCount === 1) {
       await redis.expire(key, WINDOW_SIZE_IN_SECONDS);
